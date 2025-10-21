@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        #captcha-container {
+            text-align: center;
+        }
+        
+        #captcha-image {
+            width: 50%;
+            height: auto;
+            margin: 20px auto;
+        }
+        
+        #captcha-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00698f;
+        }
+        
+        #error-message {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="captcha-container">
+        <img id="captcha-image" src="" alt="Captcha Image">
+        <p id="captcha-text"></p>
+        <p id="error-message"></p>
+    </div>
+    <script>
+        // Get the URL parameter
+        const url = new URLSearchParams(window.location.search).get('url');
+        
+        // Default to sample image if no URL is provided
+        let captchaImage;
+        if (!url) {
+            captchaImage = 'https://picsum.photos/200/300';
+        } else {
+            captchaImage = url;
+        }
+        
+        // Display captcha image
+        const image = document.getElementById('captcha-image');
+        image.src = captchaImage;
+        
+        // Mock OCR solver
+        function solveCaptcha(image) {
+            // Simulate OCR recognition (replace with actual OCR library)
+            return Promise.resolve('Mocked Captcha Text');
+        }
+        
+        // Solve captcha and display text
+        solveCaptcha(captchaImage).then((text) => {
+            const captchaText = document.getElementById('captcha-text');
+            captchaText.textContent = `Recognized Text: ${text}`;
+            setTimeout(() => {
+                captchaText.style.display = 'none';
+            }, 15000);
+        }).catch((error) => {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = `Error: ${error.message}`;
+        });
+    </script>
+</body>
+</html>
