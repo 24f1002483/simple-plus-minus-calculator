@@ -7,26 +7,32 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-        }
-        
-        #captcha-container {
             text-align: center;
         }
-        
-        #captcha-image {
-            width: 50%;
-            height: auto;
-            margin: 20px auto;
+        #captcha-container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        
+        #captcha-image {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
         #captcha-text {
             font-size: 24px;
             font-weight: bold;
             color: #00698f;
         }
-        
         #error-message {
-            color: #ff0000;
+            color: #f00;
+            font-size: 18px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -37,37 +43,36 @@
         <p id="error-message"></p>
     </div>
     <script>
-        // Get the URL parameter
-        const url = new URLSearchParams(window.location.search).get('url');
-        
-        // Default to sample image if no URL is provided
-        let captchaImage;
-        if (!url) {
-            captchaImage = 'https://picsum.photos/200/300';
-        } else {
-            captchaImage = url;
+        const urlParams = new URLSearchParams(window.location.search);
+        let captchaUrl = urlParams.get('url');
+        if (!captchaUrl) {
+            captchaUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&choe=UTF-8&chl=Hello,+World!';
         }
-        
-        // Display captcha image
-        const image = document.getElementById('captcha-image');
-        image.src = captchaImage;
-        
-        // Mock OCR solver
-        function solveCaptcha(image) {
-            // Simulate OCR recognition (replace with actual OCR library)
-            return Promise.resolve('Mocked Captcha Text');
+        const captchaImage = document.getElementById('captcha-image');
+        const captchaText = document.getElementById('captcha-text');
+        const errorMessage = document.getElementById('error-message');
+
+        function solveCaptcha() {
+            // Mock OCR solver (use a real one like Tesseract.js for a production app)
+            const mockSolver = {
+                solve: () => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve('Mock Captcha Text');
+                        }, 15000); // Solve within 15 seconds
+                    });
+                }
+            };
+            return mockSolver.solve();
         }
-        
-        // Solve captcha and display text
-        solveCaptcha(captchaImage).then((text) => {
-            const captchaText = document.getElementById('captcha-text');
-            captchaText.textContent = `Recognized Text: ${text}`;
-            setTimeout(() => {
-                captchaText.style.display = 'none';
-            }, 15000);
+
+        captchaImage.src = captchaUrl;
+
+        solveCaptcha().then((text) => {
+            captchaText.textContent = text;
         }).catch((error) => {
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = `Error: ${error.message}`;
+            console.error(error);
+            errorMessage.textContent = 'Failed to solve captcha';
         });
     </script>
 </body>
